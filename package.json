@@ -204,9 +204,9 @@
             "items": {
                 "type": "string"
           },
-          "description": "Intent-types with these labels will be hidden."
+          "description": "Intent-types with any of these labels will be hidden. Overriden by the Include labels setting."
         },
-        "intentManager.mandatoryLabels": {
+        "intentManager.includeLabels": {
           "type": "array",
           "scope": "application",
             "items": {

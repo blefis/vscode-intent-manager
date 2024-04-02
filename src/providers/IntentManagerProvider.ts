@@ -98,7 +98,7 @@ export class IntentManagerProvider implements vscode.FileSystemProvider, vscode.
 
 	timeout: number;
 	fileIgnore: Array<string>;
-	fileMandatory: Array<string>;
+	fileInclude: Array<string>;
 
 	nsp_version: string;
 
@@ -111,7 +111,7 @@ export class IntentManagerProvider implements vscode.FileSystemProvider, vscode.
 	public onDidChangeFileDecorations: vscode.Event<vscode.Uri | vscode.Uri[] | undefined>;
     private _eventEmiter: vscode.EventEmitter<vscode.Uri | vscode.Uri[]>;
 	
-	constructor (nspAddr: string, username: string, secretStorage: vscode.SecretStorage, port: string, timeout: number, fileIgnore: Array<string>, fileMandatory: Array<string>) {
+	constructor (nspAddr: string, username: string, secretStorage: vscode.SecretStorage, port: string, timeout: number, fileIgnore: Array<string>, fileInclude: Array<string>) {
 		console.log("creating IntentManagerProvider("+nspAddr+")");
 		this.nspAddr = nspAddr;
 		this.username = username;
@@ -119,7 +119,7 @@ export class IntentManagerProvider implements vscode.FileSystemProvider, vscode.
 		this.nsp_version = "";
 		this.timeout = timeout;
 		this.fileIgnore = fileIgnore;
-		this.fileMandatory = fileMandatory;
+		this.fileInclude = fileInclude;
 		this.secretStorage = secretStorage;
 		
 
@@ -1772,16 +1772,16 @@ export class IntentManagerProvider implements vscode.FileSystemProvider, vscode.
                 }
             }
             
-            function checkMandatoryLabels(mandatoryLabels, intent) {
+            function checkIncludeLabels(includeLabels, intent) {
                 // console.log(intent);
-                const foundValues = intent.label.some(value => mandatoryLabels.includes(value));                
+                const foundValues = intent.label.some(value => includeLabels.includes(value));                
                 if (foundValues) {
                     return intent;
                 }
             }
 	
-            if (this.fileMandatory.length > 0) {
-                var filteredList = json["ibn-administration:intent-type-catalog"]["intent-type"].filter(checkMandatoryLabels.bind(this, this.fileMandatory));
+            if (this.fileInclude.length > 0) {
+                var filteredList = json["ibn-administration:intent-type-catalog"]["intent-type"].filter(checkIncludeLabels.bind(this, this.fileInclude));
                 result = (filteredList ?? []).map(entry => [entry.name + "_v" + entry.version, vscode.FileType.Directory]);                
             } else {
                 var filteredList = json["ibn-administration:intent-type-catalog"]["intent-type"].filter(checkIgnoreLabels.bind(this, this.fileIgnore));
