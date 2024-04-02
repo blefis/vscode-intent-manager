@@ -33,7 +33,7 @@ myStatusBarItem.command = 'nokia-intent-manager.intentStatus';
     Class implementing FileSystemProvider for Intent Manager
 */
 class IntentManagerProvider {
-    constructor(nspAddr, username, secretStorage, port, timeout, fileIgnore) {
+    constructor(nspAddr, username, secretStorage, port, timeout, fileIgnore, fileMandatory) {
         this.intentCatalog = [];
         // --- manage file events
         this._emitter = new vscode.EventEmitter();
@@ -45,6 +45,7 @@ class IntentManagerProvider {
         this.nsp_version = "";
         this.timeout = timeout;
         this.fileIgnore = fileIgnore;
+        this.fileMandatory = fileMandatory;
         this.secretStorage = secretStorage;
         // To be updated to only use standard ports.
         this.port = port;
@@ -1530,17 +1531,36 @@ class IntentManagerProvider {
         let result = [];
         // Load data from IM and create folders / files depending on the selected directory
         if ((uri.toString() === "im:/intent-types") || (uri.toString() === "im:/intents")) {
-            function checkLabels(obj, ignoreLabels) {
-                console.log(ignoreLabels);
-                var filteredArray = ignoreLabels.label.filter(value => obj.includes(value));
-                ;
-                if (filteredArray.length == 0) {
-                    //console.log("Returning "+ignoreLabels.name);
-                    return ignoreLabels;
+
+            function checkIgnoreLabels(ignoreLabels, intent) {
+                // console.log(intent);
+                const foundValues = intent.label.some(value => ignoreLabels.includes(value));                
+                if (!foundValues) {
+                    return intent;
                 }
             }
-            let filteredList = json["ibn-administration:intent-type-catalog"]["intent-type"].filter(checkLabels.bind(this, this.fileIgnore));
-            result = (filteredList ?? []).map(entry => [entry.name + "_v" + entry.version, vscode.FileType.Directory]);
+            
+            function checkMandatoryLabels(mandatoryLabels, intent) {
+                // console.log(intent);
+                const foundValues = intent.label.some(value => mandatoryLabels.includes(value));                
+                if (foundValues) {
+                    return intent;
+                }
+            }
+
+
+
+            if (this.fileMandatory.length > 0) {
+                var filteredList = json["ibn-administration:intent-type-catalog"]["intent-type"].filter(checkMandatoryLabels.bind(this, this.fileMandatory));
+                result = (filteredList ?? []).map(entry => [entry.name + "_v" + entry.version, vscode.FileType.Directory]);                
+            } else {
+                var filteredList = json["ibn-administration:intent-type-catalog"]["intent-type"].filter(checkIgnoreLabels.bind(this, this.fileIgnore));
+                result = (filteredList ?? []).map(entry => [entry.name + "_v" + entry.version, vscode.FileType.Directory]);
+            }
+
+
+            // result = (filteredList ?? []).map(entry => [entry.name + "_v" + entry.version, vscode.FileType.Directory]);
+
         }
         else if ((uri.toString().startsWith("im:/intent-types/")) && (uri.toString().split("/").length === 3)) {
             // adding Yang modules

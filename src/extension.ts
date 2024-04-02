@@ -13,8 +13,9 @@ export function activate(context: vscode.ExtensionContext) {
 	const secretStorage: vscode.SecretStorage = context.secrets;	const port = config.get("port");
 	const timeout : number = config.get("timeout") ?? 20000;
 	const fileIgnore : Array<string> = config.get("ignoreLabels") ?? [];
+	const fileMandatory : Array<string> = config.get("mandatoryLabels") ?? [];
 
-	const imProvider = new IntentManagerProvider(nspAddr, username, secretStorage, port, timeout, fileIgnore);
+	const imProvider = new IntentManagerProvider(nspAddr, username, secretStorage, port, timeout, fileIgnore, fileMandatory);
 	context.subscriptions.push(vscode.workspace.registerFileSystemProvider('im', imProvider, { isCaseSensitive: true }));
 	context.subscriptions.push(vscode.window.registerFileDecorationProvider(imProvider));
 	

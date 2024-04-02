@@ -73,3 +73,8 @@ Updates:
 
 Updates:
 * Fixed code to correctly parse find the filepath so that upload from a local file can work
+
+## [1.1.4]
+
+Updates:
+* Added option for mandatory tags

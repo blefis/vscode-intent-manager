@@ -12,7 +12,8 @@ function activate(context) {
     const port = config.get("port");
     const timeout = config.get("timeout") ?? 20000;
     const fileIgnore = config.get("ignoreLabels") ?? [];
-    const imProvider = new providers_1.IntentManagerProvider(nspAddr, username, secretStorage, port, timeout, fileIgnore);
+    const fileMandatory = config.get("mandatoryLabels") ?? [];
+    const imProvider = new providers_1.IntentManagerProvider(nspAddr, username, secretStorage, port, timeout, fileIgnore, fileMandatory);
     context.subscriptions.push(vscode.workspace.registerFileSystemProvider('im', imProvider, { isCaseSensitive: true }));
     context.subscriptions.push(vscode.window.registerFileDecorationProvider(imProvider));
     let fileAssociations = vscode.workspace.getConfiguration('files').get('associations') || {};
