@@ -68,3 +68,8 @@ Updates:
 
 Updates:
 * Hide clear text password in settings.
+
+## [1.1.3]
+
+Updates:
+* Fixed code to correctly parse find the filepath so that upload from a local file can work

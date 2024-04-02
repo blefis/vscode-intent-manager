@@ -878,11 +878,10 @@ export class IntentManagerProvider implements vscode.FileSystemProvider, vscode.
 		let modules:Array<string>=[];
 		let views:Array<string>=[];
 		
-		let filepath= uri.toString().replace("%20"," ").replace("file://","");
-		
+		let filepath = uri.toString().replaceAll("%20", " ").replace("file://", "").replace("/c%3A", "c:");
 		// Raising exceptions if some resources are not available (missing files or folders)
 		if (!fs.existsSync(filepath.replace("meta-info.json","script-content.js"))){
-			vscode.window.showErrorMessage("Script not found EB");
+			vscode.window.showErrorMessage("Script not found");
 			throw vscode.FileSystemError.FileNotFound("Script not found");
 		}
 		if (!fs.existsSync(filepath.replace("meta-info.json","intent-type-resources"))) {
