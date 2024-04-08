@@ -78,3 +78,4 @@ Updates:
 
 Updates:
 * Added option for include tags
+* Updated filpath parsing to use fspath
