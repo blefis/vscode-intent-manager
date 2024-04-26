@@ -920,17 +920,28 @@ export class IntentManagerProvider implements vscode.FileSystemProvider, vscode.
 		const editor = vscode.window.activeTextEditor;
 		let document = editor.document;
 
+
+
+
 		const data = document.getText();
 		let meta=JSON.parse(data);
 
 		if (!("intent-type" in meta) || !("version" in meta)){
-			const intentnameversion = await vscode.window.showInputBox({
-				placeHolder: "{lowercasename}_v{version}",
-				title: "Intent-type name or version not found in meta. Please insert.",
-				validateInput: text => {
-					var regex = /^([a-z_]+_v+[1-9])$/g;
-				  return regex.test(text) ? null : '{lowercasename}_v{version}'; 
-			  }});
+			// const intentnameversion = await vscode.window.showInputBox({
+			// 	placeHolder: "{lowercasename}_v{version}",
+			// 	title: "Intent-type name or version not found in meta. Please insert.",
+			// 	validateInput: text => {
+			// 		var regex = /^([a-z_-]+_v+[1-9])$/g;
+			// 	  return regex.test(text) ? null : '{lowercasename}_v{version}'; 
+			//   }});
+
+			// Takes automatically the name from the folder name. Assumes the folder name follows the expected format
+			let path=document.fileName;
+			let lastSlashIndex=path.lastIndexOf("\\");
+			path=path.substring(0,lastSlashIndex)
+			lastSlashIndex=path.lastIndexOf("\\");
+			const intentnameversion=path.substring(lastSlashIndex +1 )
+
 			meta['intent-type']=intentnameversion?.split("_v")[0];
 			meta['version']=parseInt(intentnameversion?.split("_v")[1]);
 		}

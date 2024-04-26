@@ -79,3 +79,9 @@ Updates:
 Updates:
 * Added option for include tags
 * Updated filpath parsing to use fspath
+
+
+## [1.1.5]
+
+Updates:
+* Intent upload takes the intent name from the parent folder, if it's not included in the meta file. It assume the parent folder has the format <intent_name>_v<intent_version>
